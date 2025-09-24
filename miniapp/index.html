@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Internet Provider MiniApp</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Roboto', sans-serif; background: #f0f2f5; color: #333; }
+    header { background: #0052cc; color: #fff; padding: 20px; text-align: center; font-size: 1.6em; font-weight: 700; }
+    .container { padding: 20px; }
+    .button { display: block; width: 100%; padding: 15px; margin: 10px 0; background: #0052cc; color: #fff; border: none; border-radius: 12px; font-size: 1.1em; font-weight: 500; cursor: pointer; transition: background 0.3s, transform 0.2s; }
+    .button:hover { background: #003d99; transform: scale(1.02); }
+    .tariff-card { background: #fff; border-radius: 15px; padding: 20px; margin: 15px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.3s; }
+    .tariff-card:hover { transform: translateY(-5px); }
+    .tariff-title { font-size: 1.3em; font-weight: 700; margin-bottom: 10px; }
+    .tariff-details { font-size: 1em; margin-bottom: 5px; }
+    input { width: 100%; padding: 12px; margin: 8px 0 15px; border-radius: 8px; border: 1px solid #ccc; font-size: 1em; }
+    .back-button { background: #777; }
+    .back-button:hover { background: #555; }
+  </style>
+</head>
+<body>
+
+<header>Internet Provider</header>
+<div class="container" id="app">
+  <div id="menu">
+    <button class="button" onclick="showTariffs()">Тарифы</button>
+    <button class="button" onclick="showConnectForm()">Подключение</button>
+    <button class="button" onclick="support()">Поддержка</button>
+    <button class="button" onclick="payment()">Оплата</button>
+  </div>
+
+  <div id="tariffs" style="display:none;">
+    <div class="tariff-card">
+      <div class="tariff-title">Базовый</div>
+      <div class="tariff-details">Скорость: 100 Мбит/с</div>
+      <div class="tariff-details">Цена: 500 ₽/мес</div>
+    </div>
+    <div class="tariff-card">
+      <div class="tariff-title">Премиум</div>
+      <div class="tariff-details">Скорость: 500 Мбит/с</div>
+      <div class="tariff-details">Цена: 1200 ₽/мес</div>
+    </div>
+    <button class="button back-button" onclick="showMenu()">Назад</button>
+  </div>
+
+  <div id="connect" style="display:none;">
+    <h3 style="margin-bottom:15px;">Подключение</h3>
+    <input type="text" placeholder="Имя" id="name">
+    <input type="text" placeholder="Телефон" id="phone">
+    <input type="text" placeholder="Адрес подключения" id="address">
+    <button class="button" onclick="submitForm()">Отправить заявку</button>
+    <button class="button back-button" onclick="showMenu()">Назад</button>
+  </div>
+</div>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+  Telegram.WebApp.ready();
+
+  function showMenu() {
+    document.getElementById('menu').style.display = 'block';
+    document.getElementById('tariffs').style.display = 'none';
+    document.getElementById('connect').style.display = 'none';
+  }
+
+  function showTariffs() {
+    document.getElementById('menu').style.display = 'none';
+    document.getElementById('tariffs').style.display = 'block';
+  }
+
+  function showConnectForm() {
+    document.getElementById('menu').style.display = 'none';
+    document.getElementById('connect').style.display = 'block';
+  }
+
+  function support() { alert('Свяжитесь с поддержкой: +7 123 456 78 90'); }
+  function payment() { alert('Оплата через Telegram Pay (тест)'); }
+
+  function submitForm() {
+    const name = document.getElementById('name').value;
+    const phone = document.getElementById('phone').value;
+    const address = document.getElementById('address').value;
+    if(!name || !phone || !address) { alert('Заполните все поля'); return; }
+
+    fetch('/webapp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({name, phone, address})
+    });
+
+    alert('Заявка отправлена!');
+    showMenu();
+  }
+</script>
+
+</body>
+</html>
